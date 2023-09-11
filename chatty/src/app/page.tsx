@@ -47,7 +47,7 @@ export default function Home() {
   };
   return (
     <main className="flex min-h-screen flex-col items-center justify-between px-24 py-5">
-      <h1 className="text-5xl font-sans">ChatterBot</h1>
+      <h1 className="text-5xl font-sans">Chatty!</h1>
 
       <div className="flex  h-[35rem] w-[40rem] flex-col items-center bg-gray-600 rounded-xl">
         <div className=" h-full flex flex-col gap-2 overflow-y-auto py-8 px-3 w-full">

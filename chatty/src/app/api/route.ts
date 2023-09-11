@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import dotenv from 'dotenv';
-dotenv.config();
+//import dotenv from 'dotenv';
+//dotenv.config();
 
 const apiKey = process.env.API_KEY;
 
