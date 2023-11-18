@@ -1,0 +1,11 @@
+# it is (node vs npx vs npm?)
+
+npx import { HuggingFaceHubEmbeddings } from "langchain/embeddings"
+
+not node import {....} ......
+
+# it is (node vs ????)
+
+"moduleResolution": "node",
+
+not the default shit! ....(what and why is the default????)
