@@ -2,14 +2,15 @@ import { PDFLoader } from "langchain/document_loaders/fs/pdf";
 import { NextRequest, NextResponse } from "next/server";
 
 //import { Pinecone } from "@pinecone-database/pinecone";
+
 import { PineconeClient } from "@pinecone-database/pinecone";
 
-//import { OpenAIEmbeddings } from "langchain/embeddings/openai";
-import { HuggingFaceInferenceEmbeddings } from "langchain/embeddings/hf";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+//import { HuggingFaceInferenceEmbeddings } from "langchain/embeddings/hf";
 import { PineconeStore } from "langchain/vectorstores/pinecone";
 
-import dotenv from 'dotenv';
-dotenv.config();
+import { process } from '/env';
+//dotenv.config();
 
 export async function POST(request: NextRequest) {
   // Extract FormData from the request
