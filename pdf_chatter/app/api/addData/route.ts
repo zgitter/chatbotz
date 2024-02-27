@@ -8,8 +8,8 @@ import { PineconeClient } from "@pinecone-database/pinecone";
 import { HuggingFaceInferenceEmbeddings } from "langchain/embeddings/hf";
 import { PineconeStore } from "langchain/vectorstores/pinecone";
 
-import dotenv from 'dotenv';
-dotenv.config();
+//import dotenv from 'dotenv';
+//dotenv.config();
 
 export async function POST(request: NextRequest) {
   // Extract FormData from the request
@@ -59,7 +59,7 @@ const index = pinecone.Index("vdbchatp");
   );
   
 
-  // Use Langchain's integration with Pinecone to store the documents
+  // Use Langchain's integration with Pinecone to embed/vectorize & store the document
   await PineconeStore.fromDocuments(splitDocuments, new HuggingFaceInferenceEmbeddings(), {pineconeIndex,
   });
 

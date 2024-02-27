@@ -61,8 +61,8 @@ const model = new HuggingFaceInference({
   // Return an output stream to the frontend
   return new StreamingTextResponse(stream);
 }
-// inti the streamer ??? .... ,stream handler ?
-// intit vdb client
-//upload the pdf to vdb/vstore)
-// initilize the vstore | model | the chain
+// initiate the streamer ??? .... ,stream handler ?
+// initiate vdb client
+//upload the pdf to vdb/vstore
+// initialize the vstore | model | the chain
 // call the chain .... query!
