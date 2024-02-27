@@ -6,7 +6,6 @@ import { PineconeStore } from "langchain/vectorstores/pinecone";
 //import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { HuggingFaceInferenceEmbeddings } from "langchain/embeddings/hf";
 
-
 //import { OpenAI } from "langchain/llms/openai";
 import { HuggingFaceInference } from "langchain/llms/hf";
 import { VectorDBQAChain } from "langchain/chains";
@@ -20,12 +19,15 @@ export async function POST(request: NextRequest) {
   // Use Vercel's `ai` package to setup a stream // a stream? -> (vdb clien | vdb | llm | init chain then call thee chain with query???)
   const { stream, handlers } = LangChainStream();
 
+  
   // Initialize Pinecone Client
   const pineconeClient = new PineconeClient();
+
   await pineconeClient.init({
     apiKey: process.env.PINECONE_API_KEY ?? "",
     environment: "gcp-starter",
   });
+
   const pineconeIndex = pineconeClient.Index(
     process.env.PINECONE_INDEX_NAME as string
   );
