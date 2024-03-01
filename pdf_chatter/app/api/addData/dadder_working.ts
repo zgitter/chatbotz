@@ -1,14 +1,17 @@
 import { PDFLoader } from "langchain/document_loaders/fs/pdf";
 import { NextRequest, NextResponse } from "next/server";
 
+//import { Pinecone } from "@pinecone-database/pinecone";
 import { PineconeClient } from "@pinecone-database/pinecone";
 
+//import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { HuggingFaceInferenceEmbeddings } from "langchain/embeddings/hf";
 import { PineconeStore } from "langchain/vectorstores/pinecone";
 
+//import dotenv from 'dotenv';
+//dotenv.config();
 
 export async function POST(request: NextRequest) {
-
   // Extract FormData from the request
   const data = await request.formData();
   // Extract the uploaded file from the FormData
@@ -28,7 +31,23 @@ export async function POST(request: NextRequest) {
   const pdfLoader = new PDFLoader(file);
   const splitDocuments = await pdfLoader.loadAndSplit();
 
-  // the vdb! ... the client then index!
+
+
+
+  // Initialize the Pinecone client
+
+/*
+const pinecone = new Pinecone();  
+
+await pinecone.init({      
+	environment: "gcp-starter",      
+	apiKey: "a672c805-0bb3-4dcf-b4c9-d511c17b5474",      
+});      
+const index = pinecone.Index("vdbchatp");
+
+*/
+
+
   const pineconeClient = new PineconeClient();
   await pineconeClient.init({
     apiKey: process.env.PINECONE_API_KEY ?? "",
@@ -39,6 +58,7 @@ export async function POST(request: NextRequest) {
     process.env.PINECONE_INDEX_NAME as string
   );
   
+
   // Use Langchain's integration with Pinecone to embed/vectorize & store the document
   await PineconeStore.fromDocuments(splitDocuments, new HuggingFaceInferenceEmbeddings(), {pineconeIndex,
   });

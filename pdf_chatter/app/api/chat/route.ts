@@ -2,15 +2,23 @@ import { NextRequest } from "next/server";
 import { PineconeClient } from "@pinecone-database/pinecone";
 import { PineconeStore } from "langchain/vectorstores/pinecone";
 
-
 //import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { HuggingFaceInferenceEmbeddings } from "langchain/embeddings/hf";
 
-//import { OpenAI } from "langchain/llms/openai";
+import { OpenAI } from "langchain/llms/openai";
 import { HuggingFaceInference } from "langchain/llms/hf";
 import { VectorDBQAChain } from "langchain/chains";
 import { StreamingTextResponse, LangChainStream } from "ai"; //??? who is ai here? Vercel?
 import { CallbackManager } from "langchain/callbacks";
+
+/// for the Newly added/ Rectified Chain
+
+import {
+  ConversationalRetrievalQAChain,
+} from "langchain/chains";
+import { BufferMemory } from "langchain/memory";
+
+
 
 export async function POST(request: NextRequest) {
   // Parse the POST request's JSON body
@@ -34,36 +42,40 @@ export async function POST(request: NextRequest) {
 
   // Initialize our vector store
   const vectorStore = await PineconeStore.fromExistingIndex(
-    new HuggingFaceInferenceEmbeddings(),
+    new HuggingFaceInferenceEmbeddings({apiKey:process.env.HggFM_API_KEY}),
     { pineconeIndex }
   );
 
-  // Specify the hggf/OpenAI model we'd like to use, and turn on streaming
-   
-
-const model = new HuggingFaceInference({
-  model: "gpt2",
-  apiKey: process.env.HggFM_API_KEY,
-  //streaming: true,
-  callbackManager: CallbackManager.fromHandlers(handlers),
+// Specify the OpenAI model we'd like to use, and turn on streaming
+const model = new OpenAI({
+  modelName: "gpt-3.5-turbo",
+  streaming: true,
+  callbacks: [handlers],
+  openAIApiKey: "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",
 });
+  const chain = ConversationalRetrievalQAChain.fromLLM(
+    model,
+    vectorStore.asRetriever(),
+    {
+      returnSourceDocuments: true,
+      memory: new BufferMemory({
+        memoryKey: "chat_history",
+        inputKey: "question", // The key for the input to the chain
+        outputKey: "text", // The key for the final conversational output of the chain
+      }),
+    }
+  );
 
-//const res = await model.call("1 + 1 =");
-//console.log({ res });
+  // Get a streaming response from our chain with the prompt given by the user
+  chain.stream({ question:body.prompt });
 
-  // Define the Langchain chain?
-  const chain = VectorDBQAChain.fromLLM(model, vectorStore, {
-    k: 1,
-    returnSourceDocuments: true,
-  });
-
-  // Call our chain with the prompt given by the user
-  chain.call({ query: body.prompt }).catch(console.error);
 
   // Return an output stream to the frontend
   return new StreamingTextResponse(stream);
+
+
 }
-// initiate the streamer ??? .... ,stream handler ?
+// initiate the streamer ??? .... , --->>> stream handler ?
 // initiate vdb client
 //upload the pdf to vdb/vstore
 // initialize the vstore | model | the chain
